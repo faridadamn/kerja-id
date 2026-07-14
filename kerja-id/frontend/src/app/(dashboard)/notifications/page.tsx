@@ -35,7 +35,7 @@ interface Notification {
   metadata?: Record<string, any>;
 }
 
-type FilterTab = "all" | "unread" | "job_alert" | "reminder" | "system";
+type FilterTab = "all" | "unread" | Notification["type"];
 
 const NOTIFICATION_ICONS: Record<string, React.ElementType> = {
   JOB_ALERT: Briefcase,

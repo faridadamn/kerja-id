@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import api from "@/lib/api";
+import { unwrapArray } from "@/lib/api-response";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -336,7 +337,7 @@ export default function CoffeeChatPage() {
     try {
       setLoading(true);
       const res = await api.get<MatchedProfessional[]>("/connect/coffee");
-      setProfessionals(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setProfessionals(unwrapArray<MatchedProfessional>(res.data));
     } catch (err) {
       console.error("Failed to fetch matches:", err);
     } finally {

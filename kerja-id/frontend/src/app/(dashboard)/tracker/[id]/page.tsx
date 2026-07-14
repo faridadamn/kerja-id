@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import api from "@/lib/api";
+import { unwrapArray } from "@/lib/api-response";
 import { cn, formatDate, formatDateShort, timeAgo } from "@/lib/utils";
 import type { Application, ApplicationStatus, ApplicationTimeline } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -132,7 +133,7 @@ export default function ApplicationDetailPage() {
   const fetchTimeline = useCallback(async () => {
     try {
       const res = await api.get<ApplicationTimeline[]>(`/applications/${id}/timeline`);
-      setTimeline(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setTimeline(unwrapArray<ApplicationTimeline>(res.data));
     } catch (err) {
       console.error("Failed to fetch timeline:", err);
     }

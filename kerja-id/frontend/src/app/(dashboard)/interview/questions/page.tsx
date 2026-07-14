@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import api from "@/lib/api";
+import { unwrapArray } from "@/lib/api-response";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +30,7 @@ import {
 import {
   Search,
   Star,
-  MessageSquareQuestion,
+  MessageSquareQuoteIcon as MessageSquareQuestion,
   Brain,
   Users,
   Briefcase,
@@ -376,7 +377,7 @@ export default function QuestionBankPage() {
       if (difficulty !== "all") params.difficulty = difficulty;
       if (search.trim()) params.search = search.trim();
       const res = await api.get<InterviewQuestion[]>("/interview/questions", { params });
-      setQuestions(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setQuestions(unwrapArray<InterviewQuestion>(res.data));
     } catch (err) {
       console.error("Failed to fetch questions:", err);
     } finally {

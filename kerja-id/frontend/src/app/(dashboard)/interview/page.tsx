@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
+import { unwrapArray } from "@/lib/api-response";
 import { cn, formatDateShort, timeAgo } from "@/lib/utils";
 import type { InterviewSession } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -230,7 +231,7 @@ export default function InterviewPage() {
     try {
       setLoading(true);
       const res = await api.get<InterviewSession[]>("/interview/history");
-      setSessions(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setSessions(unwrapArray<InterviewSession>(res.data));
     } catch (err) {
       console.error("Failed to fetch interview sessions:", err);
     } finally {
@@ -247,7 +248,7 @@ export default function InterviewPage() {
       if (filterDifficulty !== "all") params.difficulty = filterDifficulty;
       if (search.trim()) params.search = search.trim();
       const res = await api.get<QuestionBankItem[]>("/interview/questions", { params });
-      setQuestions(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setQuestions(unwrapArray<QuestionBankItem>(res.data));
     } catch (err) {
       console.error("Failed to fetch questions:", err);
     } finally {

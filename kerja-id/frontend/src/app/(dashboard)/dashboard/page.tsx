@@ -32,6 +32,9 @@ import {
 
 interface ApplicationStats {
   total: number;
+  active?: number;
+  interviews?: number;
+  offers?: number;
   byStatus: {
     SAVED: number;
     APPLIED: number;
@@ -42,6 +45,16 @@ interface ApplicationStats {
     REJECTED: number;
   };
 }
+
+const EMPTY_STATUS_COUNTS: ApplicationStats["byStatus"] = {
+  SAVED: 0,
+  APPLIED: 0,
+  SCREENING: 0,
+  INTERVIEW: 0,
+  OFFER: 0,
+  ACCEPTED: 0,
+  REJECTED: 0,
+};
 
 /* ------------------------------------------------------------------ */
 /*  Status helpers                                                     */
@@ -178,14 +191,14 @@ export default function DashboardPage() {
   const displayName = profile?.fullName ?? user?.email?.split("@")[0] ?? "User";
   const completion = profile?.profileCompletion ?? 0;
   const skills = profile?.skills?.map((s) => s.name) ?? [];
+  const statusCounts = stats?.byStatus ?? EMPTY_STATUS_COUNTS;
 
   const activeCount =
-    (stats?.byStatus.APPLIED ?? 0) +
-    (stats?.byStatus.SCREENING ?? 0) +
-    (stats?.byStatus.INTERVIEW ?? 0);
+    stats?.active ??
+    statusCounts.APPLIED + statusCounts.SCREENING + statusCounts.INTERVIEW;
 
-  const interviewCount = stats?.byStatus.INTERVIEW ?? 0;
-  const offerCount = stats?.byStatus.OFFER ?? 0;
+  const interviewCount = stats?.interviews ?? statusCounts.INTERVIEW;
+  const offerCount = stats?.offers ?? statusCounts.OFFER;
 
   /* Greeting based on time of day */
   const hour = new Date().getHours();

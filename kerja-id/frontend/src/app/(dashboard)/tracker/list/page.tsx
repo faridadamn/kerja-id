@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
+import { unwrapArray } from "@/lib/api-response";
 import { cn, formatDateShort, timeAgo } from "@/lib/utils";
 import type { Application, ApplicationStatus } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -256,7 +257,7 @@ export default function TrackerListPage() {
       if (filterSource !== "all") params.source = filterSource;
       if (search.trim()) params.search = search.trim();
       const res = await api.get<Application[]>("/applications", { params });
-      setApplications(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setApplications(unwrapArray<Application>(res.data));
     } catch (err) {
       console.error("Failed to fetch applications:", err);
     } finally {

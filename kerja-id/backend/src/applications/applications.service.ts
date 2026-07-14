@@ -214,40 +214,88 @@ export class ApplicationsService {
 
   // ==================== GET STATS ====================
   async getStats(userId: string) {
-    const total = await this.prisma.application.count({ where: { userId } });
-    const active = await this.prisma.application.count({
-      where: {
-        userId,
-        status: { in: ['APPLIED', 'SCREENING', 'INTERVIEW'] },
-      },
-    });
-    const interviews = await this.prisma.application.count({
-      where: { userId, status: 'INTERVIEW' },
-    });
-    const offers = await this.prisma.application.count({
-      where: { userId, status: 'OFFER' },
-    });
-    const rejected = await this.prisma.application.count({
-      where: { userId, status: 'REJECTED' },
-    });
+    const statuses: ApplicationStatus[] = [
+      'SAVED',
+      'APPLIED',
+      'SCREENING',
+      'INTERVIEW',
+      'OFFER',
+      'ACCEPTED',
+      'REJECTED',
+      'WITHDRAWN',
+    ];
+
+    const [total, groupedStatuses, groupedSources, respondedApplications] = await Promise.all([
+      this.prisma.application.count({ where: { userId } }),
+      this.prisma.application.groupBy({
+        by: ['status'],
+        where: { userId },
+        _count: { status: true },
+      }),
+      this.prisma.application.groupBy({
+        by: ['source'],
+        where: { userId },
+        _count: { source: true },
+      }),
+      this.prisma.application.findMany({
+        where: {
+          userId,
+          status: { notIn: ['SAVED', 'APPLIED'] },
+          appliedAt: { not: null },
+        },
+        select: {
+          appliedAt: true,
+          updatedAt: true,
+        },
+      }),
+    ]);
+
+    const byStatus = statuses.reduce(
+      (acc, status) => ({ ...acc, [status]: 0 }),
+      {} as Record<ApplicationStatus, number>,
+    );
+    for (const item of groupedStatuses) {
+      byStatus[item.status] = item._count.status;
+    }
+
+    const bySource: Record<string, number> = {};
+    for (const item of groupedSources) {
+      bySource[item.source || 'Lainnya'] = item._count.source;
+    }
+
+    const active = byStatus.APPLIED + byStatus.SCREENING + byStatus.INTERVIEW;
+    const interviews = byStatus.INTERVIEW;
+    const offers = byStatus.OFFER;
+    const rejected = byStatus.REJECTED;
 
     // Response rate
-    const responded = total - (await this.prisma.application.count({
-      where: { userId, status: { in: ['SAVED', 'APPLIED'] } },
-    }));
+    const responded = total - byStatus.SAVED - byStatus.APPLIED;
     const responseRate = total > 0 ? Math.round((responded / total) * 100) : 0;
 
     // Interview rate
     const interviewRate = total > 0 ? Math.round((interviews / total) * 100) : 0;
 
+    const avgResponseTime =
+      respondedApplications.length > 0
+        ? Math.round(
+            respondedApplications.reduce((sum, app) => {
+              const diff = app.updatedAt.getTime() - app.appliedAt!.getTime();
+              return sum + Math.max(0, diff / (1000 * 60 * 60 * 24));
+            }, 0) / respondedApplications.length,
+          )
+        : 0;
+
     return {
       total,
+      byStatus,
+      bySource,
       active,
       interviews,
       offers,
       rejected,
       responseRate,
       interviewRate,
+      avgResponseTime,
     };
   }
 

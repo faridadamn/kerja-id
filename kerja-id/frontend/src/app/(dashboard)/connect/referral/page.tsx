@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import api from "@/lib/api";
+import { unwrapArray } from "@/lib/api-response";
 import { cn, formatDateShort, timeAgo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -299,7 +300,7 @@ export default function ReferralPage() {
     try {
       setLoading(true);
       const res = await api.get<ReferralRequest[]>("/connect/referral");
-      setReferrals(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setReferrals(unwrapArray<ReferralRequest>(res.data));
     } catch (err) {
       console.error("Failed to fetch referrals:", err);
     } finally {
@@ -319,7 +320,7 @@ export default function ReferralPage() {
       const res = await api.get<SearchResult[]>("/connect/referral/search", {
         params: { q: searchQuery.trim() },
       });
-      setSearchResults(Array.isArray(res.data) ? res.data : res.data.data || []);
+      setSearchResults(unwrapArray<SearchResult>(res.data));
     } catch (err) {
       console.error("Search failed:", err);
       setSearchResults([]);
