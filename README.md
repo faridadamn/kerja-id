@@ -11,7 +11,6 @@ Repo ini berisi aplikasi web Next.js dan API NestJS. Modul backend yang sudah ad
 ## Struktur Repo
 
 ```text
-kerja-id/
 ├── backend/        # NestJS API, Prisma, PostgreSQL, Redis
 ├── frontend/       # Next.js App Router, React, Tailwind CSS
 ├── docs/           # Dokumentasi API dan deployment

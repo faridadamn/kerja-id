@@ -12,8 +12,7 @@
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/kerja-id/kerja-id.git
-cd kerja-id
+git clone https://github.com/faridadamn/kerja-id.git
 
 # 2. Start infrastructure
 cd infra && docker-compose up -d
