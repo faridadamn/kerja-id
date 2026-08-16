@@ -1,3 +1,4 @@
+import { AuthenticatedRequest } from '../common/authenticated-request';
 import {
   Controller,
   Post,
@@ -78,7 +79,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({ status: 200, description: 'Token refreshed' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async refreshToken(@Request() req) {
+  async refreshToken(@Request() req: AuthenticatedRequest) {
     return this.authService.refreshToken(req.user.sub);
   }
 
@@ -89,7 +90,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiResponse({ status: 200, description: 'User profile' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getMe(@Request() req) {
+  async getMe(@Request() req: AuthenticatedRequest) {
     return this.authService.getMe(req.user.sub);
   }
 }

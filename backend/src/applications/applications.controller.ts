@@ -1,3 +1,4 @@
+import { AuthenticatedRequest } from '../common/authenticated-request';
 import {
   Controller,
   Get,
@@ -29,21 +30,21 @@ export class ApplicationsController {
   // ==================== GET STATS ====================
   @Get('stats')
   @ApiOperation({ summary: 'Get application statistics' })
-  async getStats(@Request() req) {
+  async getStats(@Request() req: AuthenticatedRequest) {
     return this.applicationsService.getStats(req.user.sub);
   }
 
   // ==================== GET REMINDERS ====================
   @Get('reminders')
   @ApiOperation({ summary: 'Get upcoming reminders' })
-  async getReminders(@Request() req) {
+  async getReminders(@Request() req: AuthenticatedRequest) {
     return this.applicationsService.getUpcomingReminders(req.user.sub);
   }
 
   // ==================== GET KANBAN BOARD ====================
   @Get('kanban')
   @ApiOperation({ summary: 'Get applications as kanban board' })
-  async getKanbanBoard(@Request() req) {
+  async getKanbanBoard(@Request() req: AuthenticatedRequest) {
     return this.applicationsService.getKanbanBoard(req.user.sub);
   }
 
@@ -51,7 +52,7 @@ export class ApplicationsController {
   @Get()
   @ApiOperation({ summary: 'Get my applications' })
   async getMyApplications(
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
     @Query('status') status?: ApplicationStatus,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -67,7 +68,7 @@ export class ApplicationsController {
   // ==================== CREATE APPLICATION ====================
   @Post()
   @ApiOperation({ summary: 'Create new application' })
-  async createApplication(@Body() dto: CreateApplicationDto, @Request() req) {
+  async createApplication(@Body() dto: CreateApplicationDto, @Request() req: AuthenticatedRequest) {
     return this.applicationsService.createApplication(req.user.sub, dto);
   }
 
@@ -77,7 +78,7 @@ export class ApplicationsController {
   async updateApplication(
     @Param('id') id: string,
     @Body() dto: UpdateApplicationDto,
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
   ) {
     return this.applicationsService.updateApplication(req.user.sub, id, dto);
   }
@@ -89,7 +90,7 @@ export class ApplicationsController {
   async updateStatus(
     @Param('id') id: string,
     @Body('status') status: ApplicationStatus,
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
   ) {
     return this.applicationsService.updateStatus(req.user.sub, id, status);
   }
@@ -100,7 +101,7 @@ export class ApplicationsController {
   async addNote(
     @Param('id') id: string,
     @Body('content') content: string,
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
   ) {
     return this.applicationsService.addNote(req.user.sub, id, content);
   }
@@ -108,14 +109,14 @@ export class ApplicationsController {
   // ==================== GET TIMELINE ====================
   @Get(':id/timeline')
   @ApiOperation({ summary: 'Get application timeline' })
-  async getTimeline(@Param('id') id: string, @Request() req) {
+  async getTimeline(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.applicationsService.getTimeline(req.user.sub, id);
   }
 
   // ==================== DELETE APPLICATION ====================
   @Delete(':id')
   @ApiOperation({ summary: 'Delete application' })
-  async deleteApplication(@Param('id') id: string, @Request() req) {
+  async deleteApplication(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.applicationsService.deleteApplication(req.user.sub, id);
   }
 }

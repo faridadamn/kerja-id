@@ -101,7 +101,7 @@ export class JobsService {
     }
 
     // Build orderBy
-    let orderBy: Prisma.JobOrderByWithRelationInput;
+    let orderBy: Prisma.JobOrderByWithRelationInput | Prisma.JobOrderByWithRelationInput[];
     switch (sort) {
       case 'date':
         orderBy = { postedAt: 'desc' };

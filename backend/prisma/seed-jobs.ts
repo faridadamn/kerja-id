@@ -42,11 +42,12 @@ async function main() {
   // Create companies
   const createdCompanies = [];
   for (const companyData of companies) {
-    const company = await prisma.company.upsert({
+    let company = await prisma.company.findFirst({
       where: { name: companyData.name },
-      update: {},
-      create: companyData,
     });
+    if (!company) {
+      company = await prisma.company.create({ data: companyData });
+    }
     createdCompanies.push(company);
   }
   console.log(`✅ Created ${createdCompanies.length} companies`);

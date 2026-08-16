@@ -1,3 +1,4 @@
+import { AuthenticatedRequest } from '../common/authenticated-request';
 import {
   Controller,
   Get,
@@ -28,7 +29,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get my full profile' })
-  async getMyProfile(@Request() req) {
+  async getMyProfile(@Request() req: AuthenticatedRequest) {
     return this.profileService.getMyProfile(req.user.sub);
   }
 
@@ -44,7 +45,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update my profile' })
-  async updateProfile(@Request() req, @Body() dto: UpdateProfileDto) {
+  async updateProfile(@Request() req: AuthenticatedRequest, @Body() dto: UpdateProfileDto) {
     return this.profileService.updateProfile(req.user.sub, dto);
   }
 
@@ -53,7 +54,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Add experience' })
-  async addExperience(@Request() req, @Body() dto: AddExperienceDto) {
+  async addExperience(@Request() req: AuthenticatedRequest, @Body() dto: AddExperienceDto) {
     return this.profileService.addExperience(req.user.sub, dto);
   }
 
@@ -62,7 +63,7 @@ export class ProfileController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update experience' })
   async updateExperience(
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
     @Param('id') id: string,
     @Body() dto: AddExperienceDto,
   ) {
@@ -73,7 +74,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete experience' })
-  async deleteExperience(@Request() req, @Param('id') id: string) {
+  async deleteExperience(@Request() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.profileService.deleteExperience(req.user.sub, id);
   }
 
@@ -82,7 +83,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Add education' })
-  async addEducation(@Request() req, @Body() dto: AddEducationDto) {
+  async addEducation(@Request() req: AuthenticatedRequest, @Body() dto: AddEducationDto) {
     return this.profileService.addEducation(req.user.sub, dto);
   }
 
@@ -91,7 +92,7 @@ export class ProfileController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update education' })
   async updateEducation(
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
     @Param('id') id: string,
     @Body() dto: AddEducationDto,
   ) {
@@ -102,7 +103,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete education' })
-  async deleteEducation(@Request() req, @Param('id') id: string) {
+  async deleteEducation(@Request() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.profileService.deleteEducation(req.user.sub, id);
   }
 
@@ -111,7 +112,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Add or update skill' })
-  async addSkill(@Request() req, @Body() dto: AddSkillDto) {
+  async addSkill(@Request() req: AuthenticatedRequest, @Body() dto: AddSkillDto) {
     return this.profileService.addSkill(req.user.sub, dto);
   }
 
@@ -119,7 +120,7 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete skill' })
-  async deleteSkill(@Request() req, @Param('id') id: string) {
+  async deleteSkill(@Request() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.profileService.deleteSkill(req.user.sub, id);
   }
 

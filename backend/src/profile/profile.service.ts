@@ -288,7 +288,9 @@ export class ProfileService {
     };
 
     for (const [field, points] of Object.entries(fields)) {
-      if (dto[field] || existing[field]) {
+      const dtoAny = dto as Record<string, unknown>;
+      const existingAny = existing as Record<string, unknown>;
+      if (dtoAny[field] || existingAny[field]) {
         score += points;
       }
     }

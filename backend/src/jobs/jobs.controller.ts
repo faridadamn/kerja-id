@@ -1,3 +1,4 @@
+import { AuthenticatedRequest } from '../common/authenticated-request';
 import {
   Controller,
   Get,
@@ -24,7 +25,7 @@ export class JobsController {
   @Get()
   @ApiOperation({ summary: 'Search and filter jobs' })
   @ApiResponse({ status: 200, description: 'Job search results' })
-  async search(@Query() dto: SearchJobsDto, @Request() req) {
+  async search(@Query() dto: SearchJobsDto, @Request() req: AuthenticatedRequest) {
     const userId = req.user?.sub;
     return this.jobsService.search(dto, userId);
   }
@@ -42,7 +43,7 @@ export class JobsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get saved jobs' })
   async getSavedJobs(
-    @Request() req,
+    @Request() req: AuthenticatedRequest,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
@@ -54,7 +55,7 @@ export class JobsController {
   @ApiOperation({ summary: 'Get job detail by ID' })
   @ApiResponse({ status: 200, description: 'Job detail' })
   @ApiResponse({ status: 404, description: 'Job not found' })
-  async findById(@Param('id') id: string, @Request() req) {
+  async findById(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     const userId = req.user?.sub;
     return this.jobsService.findById(id, userId);
   }
@@ -65,7 +66,7 @@ export class JobsController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Save/bookmark a job' })
-  async saveJob(@Param('id') id: string, @Request() req) {
+  async saveJob(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.jobsService.saveJob(req.user.sub, id);
   }
 
@@ -74,7 +75,7 @@ export class JobsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Remove saved/bookmark job' })
-  async unsaveJob(@Param('id') id: string, @Request() req) {
+  async unsaveJob(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.jobsService.unsaveJob(req.user.sub, id);
   }
 }

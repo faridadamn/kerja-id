@@ -1,3 +1,4 @@
+import { AuthenticatedRequest } from '../common/authenticated-request';
 import {
   Controller,
   Get,
@@ -34,14 +35,14 @@ export class CvController {
   // ==================== GET MY CVs ====================
   @Get()
   @ApiOperation({ summary: 'Get all my CV versions' })
-  async getMyCvs(@Request() req) {
+  async getMyCvs(@Request() req: AuthenticatedRequest) {
     return this.cvService.getMyCvs(req.user.sub);
   }
 
   // ==================== GET CV BY ID ====================
   @Get(':id')
   @ApiOperation({ summary: 'Get CV by ID' })
-  async getCvById(@Param('id') id: string, @Request() req) {
+  async getCvById(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.cvService.getCvById(req.user.sub, id);
   }
 
@@ -49,35 +50,35 @@ export class CvController {
   @Post()
   @ApiOperation({ summary: 'Create new CV version' })
   @ApiResponse({ status: 201, description: 'CV created' })
-  async createCv(@Body() dto: CreateCvDto, @Request() req) {
+  async createCv(@Body() dto: CreateCvDto, @Request() req: AuthenticatedRequest) {
     return this.cvService.createCv(req.user.sub, dto);
   }
 
   // ==================== UPDATE CV ====================
   @Put(':id')
   @ApiOperation({ summary: 'Update CV' })
-  async updateCv(@Param('id') id: string, @Body() dto: UpdateCvDto, @Request() req) {
+  async updateCv(@Param('id') id: string, @Body() dto: UpdateCvDto, @Request() req: AuthenticatedRequest) {
     return this.cvService.updateCv(req.user.sub, id, dto);
   }
 
   // ==================== DELETE CV ====================
   @Delete(':id')
   @ApiOperation({ summary: 'Delete CV' })
-  async deleteCv(@Param('id') id: string, @Request() req) {
+  async deleteCv(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
     return this.cvService.deleteCv(req.user.sub, id);
   }
 
   // ==================== ANALYZE CV ====================
   @Post('analyze')
   @ApiOperation({ summary: 'Analyze CV for ATS compatibility' })
-  async analyzeCv(@Body() dto: AnalyzeCvDto, @Request() req) {
+  async analyzeCv(@Body() dto: AnalyzeCvDto, @Request() req: AuthenticatedRequest) {
     return this.cvService.analyzeCv(req.user.sub, dto);
   }
 
   // ==================== MATCH WITH JOB ====================
   @Post('match')
   @ApiOperation({ summary: 'Match CV with job description' })
-  async matchWithJob(@Body() dto: MatchCvDto, @Request() req) {
+  async matchWithJob(@Body() dto: MatchCvDto, @Request() req: AuthenticatedRequest) {
     return this.cvService.matchWithJob(req.user.sub, dto);
   }
 }
